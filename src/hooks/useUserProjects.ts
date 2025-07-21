@@ -7,6 +7,7 @@ import {
   query,
   where,
   addDoc,
+  Timestamp,
   serverTimestamp
 } from 'firebase/firestore'
 import { db } from '../firebase'
@@ -34,7 +35,7 @@ export function useUserProjects () {
             id: doc.id,
             name: data.name,
             description: data.description,
-            createdAt: data.createdAt,
+            createdAt: data.createdAt?.toDate?.() ?? null,
             ownerId: data.ownerId
           }
         })
@@ -68,7 +69,7 @@ export function useUserProjects () {
         id: docRef.id,
         name,
         description,
-        createdAt: new Date(), // display fallback
+        createdAt: Timestamp.fromDate(new Date()), // display fallback
         ownerId: user.uid
       }
     ])

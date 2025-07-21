@@ -1,53 +1,37 @@
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import {
-  addDoc,
   collection,
   deleteDoc,
   doc,
-  updateDoc,
+  getDocs,
   query,
   where,
-  onSnapshot,
-  serverTimestamp
+  addDoc,
+  serverTimestamp,
+  Timestamp,
+  updateDoc
 } from 'firebase/firestore'
 import { db } from '../firebase'
 import { useAuth } from '../auth/AuthContext'
+import type { Task, TaskStatus, TaskPriority } from '../types/types'
 
-type Task = {
-  id?: string
-  title: string
-  description: string
-  status: 'To Do' | 'In Progress' | 'Done'
-  dueDate: Date
-  priority: 'Low' | 'Medium' | 'High'
-  projectId: string
-  createdAt?: any
-  updatedAt?: any
-  ownerId?: string
-}
-
-export const useUserTasks = (projectId: string | null) => {
+export function useUserTasks (projectId: string | null) {
   const { user } = useAuth()
   const [tasks, setTasks] = useState<Task[]>([])
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<Error | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(false)
 
-  // REAL-TIME FETCH: filtered by projectId
   useEffect(() => {
-    if (!user || !projectId) return
+    const fetchTasks = async () => {
+      if (!user || !projectId) return
 
-    setLoading(true)
-    setError(null)
-
-    const q = query(
-      collection(db, 'tasks'),
-      where('ownerId', '==', user.uid),
-      where('projectId', '==', projectId)
-    )
-
-    const unsubscribe = onSnapshot(
-      q,
-      snapshot => {
+      try {
+        const q = query(
+          collection(db, 'tasks'),
+          where('ownerId', '==', user.uid),
+          where('projectId', '==', projectId)
+        )
+        const snapshot = await getDocs(q)
         const taskList: Task[] = snapshot.docs.map(doc => {
           const data = doc.data()
           return {
@@ -55,95 +39,83 @@ export const useUserTasks = (projectId: string | null) => {
             title: data.title,
             description: data.description,
             status: data.status,
-            dueDate: data.dueDate?.toDate(),
             priority: data.priority,
+            dueDate: data.dueDate?.toDate?.(),
             projectId: data.projectId,
-            createdAt: data.createdAt,
-            updatedAt: data.updatedAt,
+            createdAt: data.createdAt?.toDate?.(),
+            updatedAt: data.updatedAt?.toDate?.(),
             ownerId: data.ownerId
           }
         })
+
         setTasks(taskList)
-        setLoading(false)
-      },
-      err => {
-        console.error('Real-time task listener error:', err)
-        setError(err as Error)
+        setError(false)
+      } catch (err) {
+        console.error('Error fetching tasks:', err)
+        setError(true)
+      } finally {
         setLoading(false)
       }
-    )
+    }
 
-    return () => unsubscribe()
+    fetchTasks()
   }, [user, projectId])
 
-  // ADD
   const addTask = async (
     task: Omit<Task, 'id' | 'createdAt' | 'updatedAt' | 'ownerId'>
   ) => {
     if (!user) return
-    setLoading(true)
-    setError(null)
 
-    try {
-      await addDoc(collection(db, 'tasks'), {
+    const now = new Date()
+
+    const docRef = await addDoc(collection(db, 'tasks'), {
+      ...task,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+      ownerId: user.uid
+    })
+
+    setTasks(prev => [
+      ...prev,
+      {
+        id: docRef.id,
         ...task,
-        status: task.status || 'To Do',
-        priority: task.priority || 'Medium',
-        ownerId: user.uid,
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp()
-      })
-    } catch (err) {
-      console.error('Error adding task:', err)
-      setError(err as Error)
-    } finally {
-      setLoading(false)
-    }
+        createdAt: Timestamp.fromDate(new Date()), // local fallback
+        updatedAt: Timestamp.fromDate(new Date()),
+        ownerId: user.uid
+      }
+    ])
   }
 
-  // UPDATE
-  const updateTask = async (taskId: string, updates: Partial<Task>) => {
-    if (!user) return
-    setLoading(true)
-    setError(null)
-
+  const updateTask = async (id: string, updates: Partial<Task>) => {
     try {
-      const taskRef = doc(db, 'tasks', taskId)
-      await updateDoc(taskRef, {
+      const ref = doc(db, 'tasks', id)
+      await updateDoc(ref, {
         ...updates,
         updatedAt: serverTimestamp()
       })
+
+      setTasks(prev => prev.map(t => (t.id === id ? { ...t, ...updates } : t)))
     } catch (err) {
       console.error('Error updating task:', err)
-      setError(err as Error)
-    } finally {
-      setLoading(false)
     }
   }
 
-  // DELETE
-  const deleteTask = async (taskId: string) => {
-    if (!user) return
-    setLoading(true)
-    setError(null)
-
+  const deleteTask = async (id: string) => {
     try {
-      const taskRef = doc(db, 'tasks', taskId)
-      await deleteDoc(taskRef)
+      await deleteDoc(doc(db, 'tasks', id))
+      setTasks(prev => prev.filter(t => t.id !== id))
     } catch (err) {
       console.error('Error deleting task:', err)
-      setError(err as Error)
-    } finally {
-      setLoading(false)
     }
   }
 
   return {
     tasks,
+    loading,
+    error,
     addTask,
     updateTask,
-    deleteTask,
-    loading,
-    error
+    deleteTask
   }
 }

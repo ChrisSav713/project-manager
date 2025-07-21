@@ -1,28 +1,17 @@
-import { createContext, useContext, useState } from 'react'
-import type { ReactNode } from 'react'
+import React, { createContext, useContext, useState } from 'react'
+import type { Project } from '../types/types'
 
-type SelectedProject = {
-  id: string
-  name: string
-  description: string
+type ContextType = {
+  selectedProject: Project | null
+  setSelectedProject: (project: Project | null) => void
 }
 
-type SelectedProjectContextType = {
-  selectedProject: SelectedProject | null
-  setSelectedProject: (project: SelectedProject | null) => void
-}
+const SelectedProjectContext = createContext<ContextType | undefined>(undefined)
 
-const SelectedProjectContext = createContext<
-  SelectedProjectContextType | undefined
->(undefined)
-
-export const SelectedProjectProvider = ({
-  children
-}: {
-  children: ReactNode
-}) => {
-  const [selectedProject, setSelectedProject] =
-    useState<SelectedProject | null>(null)
+export const SelectedProjectProvider: React.FC<{
+  children: React.ReactNode
+}> = ({ children }) => {
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null)
 
   return (
     <SelectedProjectContext.Provider
@@ -35,7 +24,7 @@ export const SelectedProjectProvider = ({
 
 export const useSelectedProject = () => {
   const context = useContext(SelectedProjectContext)
-  if (!context) {
+  if (context === undefined) {
     throw new Error(
       'useSelectedProject must be used within a SelectedProjectProvider'
     )

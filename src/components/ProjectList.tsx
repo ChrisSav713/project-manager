@@ -2,12 +2,14 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { useUserProjects } from '../hooks/useUserProjects'
 import { useSelectedProject } from '../contexts/SelectedProjectContext'
+import type { Project } from '../types/types'
 
 const ProjectList = () => {
   const { projects, loading, error, deleteProject } = useUserProjects()
   const { setSelectedProject } = useSelectedProject()
 
-  const handleSelect = project => {
+  const handleSelect = (project: Project) => {
+    console.log('Selected Project = ' + project.name)
     setSelectedProject(project)
   }
 
@@ -47,21 +49,6 @@ const ProjectList = () => {
                   Created:{' '}
                   {project.createdAt?.toDate?.().toLocaleString() || 'N/A'}
                 </p>
-              </div>
-
-              <div className='flex flex-col gap-2 ml-4'>
-                <Link to={`/edit/${project.id}`}>
-                  <button className='bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-1 rounded'>
-                    Edit
-                  </button>
-                </Link>
-
-                <button
-                  onClick={() => deleteProject(project.id)}
-                  className='bg-red-500 hover:bg-red-600 text-white px-4 py-1 rounded'
-                >
-                  Delete
-                </button>
               </div>
             </div>
           ))}

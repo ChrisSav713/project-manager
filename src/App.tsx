@@ -9,6 +9,10 @@ import PrivateRoute from './components/PrivateRoute'
 import PublicRoute from './components/PublicRoute'
 import NewProject from './pages/newProject'
 import EditProjectForm from './pages/editProjectForm'
+import NewTaskForm from './pages/newTaskForm'
+import EditTaskForm from './pages/editTaskForm'
+import NewTaskPage from './pages/newTaskPage'
+import EditTaskPage from './pages/editTaskPage'
 
 function App () {
   const { user } = useAuth()
@@ -59,6 +63,22 @@ function App () {
             element={
               <PrivateRoute>
                 <EditProjectForm />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path='/task/new'
+            element={
+              <PrivateRoute>
+                <NewTaskPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path='/task/edit/:taskId'
+            element={
+              <PrivateRoute>
+                <EditTaskPage />
               </PrivateRoute>
             }
           />
