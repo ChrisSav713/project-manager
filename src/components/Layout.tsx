@@ -4,6 +4,7 @@ import { useSelectedProject } from '../contexts/SelectedProjectContext'
 import ProjectCard from '../components/ProjectCard'
 import { useUserProjects } from '../hooks/useUserProjects'
 import { Link, useNavigate } from 'react-router-dom'
+import TaskList from './TaskList'
 
 const Layout = () => {
   const { projects, loading, error, deleteProject } = useUserProjects()
@@ -22,31 +23,17 @@ const Layout = () => {
     <div className='flex h-screen flex-col md:flex-row'>
       {/* Sidebar for Desktop */}
       <aside className='hidden md:flex md:flex-col w-64 bg-gray-100 border-r'>
-        <h2 className='text-lg font-bold p-4 border-b'>Projects</h2>
+        <div className='flex justify-between items-center border-b'>
+          <h2 className='text-lg font-bold p-4'>Projects</h2>
 
-        <div className='flex flex-col gap-2 ml-4'>
-          <Link to='/newproject'>
-            <button className='bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'>
-              + New Project
-            </button>
-          </Link>
-          {selectedProject && (
-            <>
-              <Link to={`/edit/${selectedProject.id}`}>
-                <button className='bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-1 rounded'>
-                  Edit
-                </button>
-              </Link>
-              <button
-                onClick={() => deleteProject(selectedProject.id)}
-                className='bg-red-500 hover:bg-red-600 text-white px-4 py-1 rounded'
-              >
-                Delete
+          <div className='flex flex-col gap-2'>
+            <Link to='/newproject'>
+              <button className='mr-2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'>
+                + New Project
               </button>
-            </>
-          )}
+            </Link>
+          </div>
         </div>
-
         <ProjectList />
       </aside>
 
@@ -74,7 +61,7 @@ const Layout = () => {
             </button>
           </div>
 
-          <p>This is where your task board or task list will go.</p>
+          <TaskList />
         </div>
       </main>
     </div>

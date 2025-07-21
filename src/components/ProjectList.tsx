@@ -5,7 +5,7 @@ import { useSelectedProject } from '../contexts/SelectedProjectContext'
 import type { Project } from '../types/types'
 
 const ProjectList = () => {
-  const { projects, loading, error, deleteProject } = useUserProjects()
+  const { projects, loading, error } = useUserProjects()
   const { setSelectedProject } = useSelectedProject()
 
   const handleSelect = (project: Project) => {
@@ -33,23 +33,23 @@ const ProjectList = () => {
           </a>
         </p>
       ) : (
-        <div className='grid gap-4'>
+        <div className='grid gap-3 p-2'>
           {projects.map(project => (
             <div
               key={project.id}
               onClick={() => handleSelect(project)}
-              className='border p-4 rounded shadow-sm bg-white flex justify-between items-start'
+              className='cursor-pointer bg-white border border-gray-200 shadow hover:shadow-lg transition rounded-lg p-4'
             >
-              <div>
-                <h3 className='text-xl font-semibold'>{project.name}</h3>
-                <p className='text-gray-600'>
-                  {project.description || 'No description'}
-                </p>
-                <p className='text-sm text-gray-400 mt-2'>
-                  Created:{' '}
-                  {project.createdAt?.toDate?.().toLocaleString() || 'N/A'}
-                </p>
-              </div>
+              <h3 className='text-lg font-semibold text-blue-700'>
+                {project.name}
+              </h3>
+
+              <p className='text-xs text-gray-400 mt-2'>
+                Created:{' '}
+                {project.createdAt?.toDate
+                  ? project.createdAt.toDate().toLocaleDateString()
+                  : '—'}
+              </p>
             </div>
           ))}
         </div>

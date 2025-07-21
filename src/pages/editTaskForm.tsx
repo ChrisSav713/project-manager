@@ -19,7 +19,7 @@ const EditTaskForm: React.FC<EditTaskFormProps> = ({ task, onSubmit }) => {
   const [status, setStatus] = useState<TaskStatus>(task.status)
   const [priority, setPriority] = useState<TaskPriority>(task.priority)
   const [dueDate, setDueDate] = useState(
-    task.dueDate ? task.dueDate.toDate().toISOString().slice(0, 10) : ''
+    task.dueDate instanceof Date ? task.dueDate.toISOString().slice(0, 10) : ''
   )
 
   useEffect(() => {
@@ -29,7 +29,9 @@ const EditTaskForm: React.FC<EditTaskFormProps> = ({ task, onSubmit }) => {
     setStatus(task.status)
     setPriority(task.priority)
     setDueDate(
-      task.dueDate ? task.dueDate.toDate().toISOString().split('T')[0] : ''
+      task.dueDate instanceof Date
+        ? task.dueDate.toISOString().split('T')[0]
+        : ''
     )
   }, [task])
 
