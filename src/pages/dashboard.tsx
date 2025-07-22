@@ -1,9 +1,8 @@
 import { useUserProjects } from '../hooks/useUserProjects'
-import { Link } from 'react-router-dom'
 import Layout from '../components/Layout'
 
 const Dashboard = () => {
-  const { projects, loading, error, deleteProject } = useUserProjects()
+  const { loading, error } = useUserProjects()
 
   if (loading) return <p className='text-center mt-10'>Loading projects...</p>
 

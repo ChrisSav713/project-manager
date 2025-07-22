@@ -13,7 +13,7 @@ import {
 } from 'firebase/firestore'
 import { db } from '../firebase'
 import { useAuth } from '../auth/AuthContext'
-import type { Task, TaskStatus, TaskPriority } from '../types/types'
+import type { Task } from '../types/types'
 
 export function useUserTasks (projectId: string | null) {
   const { user } = useAuth()
@@ -65,8 +65,6 @@ export function useUserTasks (projectId: string | null) {
     task: Omit<Task, 'id' | 'createdAt' | 'updatedAt' | 'ownerId'>
   ) => {
     if (!user) return
-
-    const now = new Date()
 
     const docRef = await addDoc(collection(db, 'tasks'), {
       ...task,

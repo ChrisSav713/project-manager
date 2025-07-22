@@ -23,8 +23,7 @@ const TaskForm: React.FC<TaskFormProps> = ({
 }) => {
   const { state, dispatch } = useTaskFormReducer(task)
   const taskId = task?.id ?? ''
-  const { comments, addComment, deleteComment, updateComment } =
-    useTaskComments(taskId)
+  const { comments, addComment, deleteComment } = useTaskComments(taskId)
 
   const [newComment, setNewComment] = useState('')
 

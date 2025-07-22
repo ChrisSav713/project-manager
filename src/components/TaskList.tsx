@@ -1,7 +1,6 @@
 import React from 'react'
 import { useSelectedProject } from '../contexts/SelectedProjectContext'
 import { useUserTasks } from '../hooks/useUserTasks'
-import type { Task } from '../types/types'
 import { useNavigate } from 'react-router-dom'
 
 const TaskList: React.FC = () => {

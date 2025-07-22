@@ -1,5 +1,3 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
 import { useUserProjects } from '../hooks/useUserProjects'
 import { useSelectedProject } from '../contexts/SelectedProjectContext'
 import type { Project } from '../types/types'

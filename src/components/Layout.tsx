@@ -1,8 +1,6 @@
-import React, { useState } from 'react'
 import ProjectList from './ProjectList'
 import { useSelectedProject } from '../contexts/SelectedProjectContext'
 import ProjectCard from '../components/ProjectCard'
-import { useUserProjects } from '../hooks/useUserProjects'
 import { Link, useNavigate } from 'react-router-dom'
 import TaskList from './TaskList'
 

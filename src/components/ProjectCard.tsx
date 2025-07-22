@@ -1,4 +1,3 @@
-import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useSelectedProject } from '../contexts/SelectedProjectContext'
 import { useUserProjects } from '../hooks/useUserProjects'

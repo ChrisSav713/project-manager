@@ -1,6 +1,5 @@
 import React from 'react'
 import { useProjectFormReducer } from '../hooks/useProjectFormReducer'
-import type { Project } from '../types/types'
 
 type ProjectFormProps = {
   onSubmit: (project: {
@@ -14,7 +13,6 @@ type ProjectFormProps = {
 
 const ProjectForm: React.FC<ProjectFormProps> = ({
   onSubmit,
-  initialProject,
   mode = 'create'
 }) => {
   const { state, dispatch } = useProjectFormReducer(undefined)
