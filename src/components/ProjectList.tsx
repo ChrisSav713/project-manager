@@ -43,13 +43,6 @@ const ProjectList = () => {
               <h3 className='text-lg font-semibold text-blue-700'>
                 {project.name}
               </h3>
-
-              <p className='text-xs text-gray-400 mt-2'>
-                Created:{' '}
-                {project.createdAt?.toDate
-                  ? project.createdAt.toDate().toLocaleDateString()
-                  : '—'}
-              </p>
             </div>
           ))}
         </div>

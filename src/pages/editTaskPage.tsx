@@ -1,8 +1,7 @@
-import React from 'react'
 import { useParams } from 'react-router-dom'
-import EditTaskForm from './editTaskForm'
 import { useUserTasks } from '../hooks/useUserTasks'
 import { useSelectedProject } from '../contexts/SelectedProjectContext'
+import TaskForm from '../pages/TaskForm'
 import { Timestamp } from 'firebase/firestore'
 
 const EditTaskPage = () => {
@@ -16,7 +15,7 @@ const EditTaskPage = () => {
   if (!task) return <p>Task not found.</p>
 
   return (
-    <EditTaskForm
+    <TaskForm
       task={task}
       onSubmit={updates =>
         updateTask(task.id, {
@@ -26,6 +25,7 @@ const EditTaskPage = () => {
             : undefined
         })
       }
+      submitLabel='Update Task'
     />
   )
 }

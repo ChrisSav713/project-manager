@@ -7,12 +7,10 @@ import Login from './pages/Login'
 import Welcome from './components/welcome'
 import PrivateRoute from './components/PrivateRoute'
 import PublicRoute from './components/PublicRoute'
-import NewProject from './pages/newProject'
-import EditProjectForm from './pages/editProjectForm'
-import NewTaskForm from './pages/newTaskForm'
-import EditTaskForm from './pages/editTaskForm'
 import NewTaskPage from './pages/newTaskPage'
 import EditTaskPage from './pages/editTaskPage'
+import NewProjectPage from './pages/newProjectPage'
+import EditProjectPage from './pages/editProjectPage'
 
 function App () {
   const { user } = useAuth()
@@ -54,7 +52,7 @@ function App () {
             path='/newproject'
             element={
               <PrivateRoute>
-                <NewProject />
+                <NewProjectPage />
               </PrivateRoute>
             }
           />
@@ -62,7 +60,7 @@ function App () {
             path='/edit/:id'
             element={
               <PrivateRoute>
-                <EditProjectForm />
+                <EditProjectPage />
               </PrivateRoute>
             }
           />

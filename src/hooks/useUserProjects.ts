@@ -8,6 +8,7 @@ import {
   where,
   addDoc,
   Timestamp,
+  updateDoc,
   serverTimestamp
 } from 'firebase/firestore'
 import { db } from '../firebase'
@@ -53,7 +54,28 @@ export function useUserProjects () {
     fetchProjects()
   }, [user])
 
-  const addProject = async (name: string, description: string) => {
+  const updateProject = async (
+    projectId: string,
+    updates: { name: string; description: string }
+  ) => {
+    const docRef = doc(db, 'projects', projectId)
+    await updateDoc(docRef, {
+      ...updates,
+      updatedAt: serverTimestamp()
+    })
+
+    setProjects(prev =>
+      prev.map(p => (p.id === projectId ? { ...p, ...updates } : p))
+    )
+  }
+
+  const addProject = async ({
+    name,
+    description
+  }: {
+    name: string
+    description: string
+  }) => {
     if (!user) return
 
     const docRef = await addDoc(collection(db, 'projects'), {
@@ -84,5 +106,5 @@ export function useUserProjects () {
     }
   }
 
-  return { projects, loading, error, deleteProject, addProject }
+  return { projects, loading, error, deleteProject, addProject, updateProject }
 }

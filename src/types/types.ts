@@ -31,3 +31,16 @@ export type NewTaskInput = Omit<
   Task,
   'id' | 'createdAt' | 'updatedAt' | 'ownerId'
 >
+
+export type Comment = {
+  id: string
+  content: string
+  authorId: string
+  createdAt: Timestamp
+}
+
+export type NewComment = {
+  content: string
+  authorId: string
+  createdAt: Timestamp
+}
